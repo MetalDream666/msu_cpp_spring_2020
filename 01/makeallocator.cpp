@@ -2,6 +2,11 @@
 
 #include "makeallocator.h"
 
+char* start = nullptr;
+char* current = nullptr;
+size_t max = 0;
+size_t curNum = 0;
+
 void makeAllocator(size_t maxSize)
 {
 	max = maxSize;
@@ -29,3 +34,4 @@ void reset()
 	current = start;
 	curNum = 0;
 }
+

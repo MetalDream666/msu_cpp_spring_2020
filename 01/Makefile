@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall
 
-all: makeallocator
+all: test
 
 test: test.o makeallocator.o
 	$(CC) makeallocator.o test.o -o test

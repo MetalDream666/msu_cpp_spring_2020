@@ -3,10 +3,10 @@
 
 #include <cstdlib>
 
-char* start = nullptr;
-char* current = nullptr;
-size_t max = 0;
-size_t curNum = 0;
+extern char* start;
+extern char* current;
+extern size_t max;
+extern size_t curNum;
 
 void makeAllocator(size_t maxSize);
 
