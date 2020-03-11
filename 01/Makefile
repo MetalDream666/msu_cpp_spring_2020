@@ -5,6 +5,7 @@ all: test
 
 test: test.o makeallocator.o
 	$(CC) makeallocator.o test.o -o test
+	./test
 
 makeallocator.o: makeallocator.cpp
 	$(CC) $(CFLAGS) makeallocator.cpp
