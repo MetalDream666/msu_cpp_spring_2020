@@ -5,29 +5,37 @@
 
 int main()
 {
-	const int ALLSIZE = 10000;
+	const int ALLSIZE = 100;
 	
-	makeAllocator(ALLSIZE);
+	Allocator all;
+	
+	all.makeAllocator(ALLSIZE);
+	if(all.get_start() == nullptr)
+	{
+		printf("Error allocating memory\n");
+		return 3;
+	}
+	printf("%p\n", all.get_start());
 	char* pointer;
 	
 	for(int i=1; i<ALLSIZE; i++)
 	{
 		for(int j=0; j<(ALLSIZE / i); j++)
 		{
-			pointer = alloc(i);
+			pointer = all.alloc(i);
 			if(pointer == nullptr)
 			{
 				printf("Something went wrong...\n");
 				return 1;
 			}
 		}
-		pointer = alloc(i);
+		pointer = all.alloc(i);
 		if(pointer != nullptr)
 		{
 			printf("It's too good...\n");
 			return 2;
 		}
-		reset();
+		all.reset();
 	}
 	printf("Everything is OK!\n");
 	return 0;

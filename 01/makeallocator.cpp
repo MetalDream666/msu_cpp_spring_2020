@@ -2,20 +2,15 @@
 
 #include "makeallocator.h"
 
-char* start = nullptr;
-char* current = nullptr;
-size_t max = 0;
-size_t curNum = 0;
-
-void makeAllocator(size_t maxSize)
+void Allocator::makeAllocator(size_t maxSize)
 {
-	max = maxSize;
-	curNum = 0;
-	start = (char*)malloc(maxSize);
-	current = start;
+	this -> start = (char*)malloc(maxSize);
+	this -> max = maxSize;
+	this -> curNum = 0;
+	this -> current = start;
 }
 
-char* alloc(size_t size)
+char* Allocator::alloc(size_t size)
 {
 	if(curNum + size > max)
 	{
@@ -23,15 +18,19 @@ char* alloc(size_t size)
 	}
 	else
 	{
-		current += size;
-		curNum += size;
-		return (current - size);
+		this -> current += size;
+		this -> curNum += size;
+		return (this -> current - size);
 	}
 }
 
-void reset()
+void Allocator::reset()
 {
-	current = start;
-	curNum = 0;
+	this -> current = start;
+	this -> curNum = 0;
 }
 
+char* Allocator:: get_start()
+{
+	return this -> start;
+}

@@ -3,15 +3,20 @@
 
 #include <cstdlib>
 
-extern char* start;
-extern char* current;
-extern size_t max;
-extern size_t curNum;
-
-void makeAllocator(size_t maxSize);
-
-char* alloc(size_t size);
-
-void reset();
+typedef class Allocator
+{
+	private:
+	char* start = nullptr;
+	char* current = nullptr;
+	size_t max;
+	size_t curNum;
+	
+	public:
+	void makeAllocator(size_t maxSize);
+	char* alloc(size_t size);
+	void reset();
+	char* get_start();
+	
+} Allocator;
 
 #endif
