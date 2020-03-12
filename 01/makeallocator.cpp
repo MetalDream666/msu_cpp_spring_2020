@@ -5,7 +5,10 @@
 void Allocator::makeAllocator(size_t maxSize)
 {
 	this -> start = (char*)malloc(maxSize);
-	this -> max = maxSize;
+	if(this -> start != nullptr)
+	{
+		this -> max = maxSize;
+	}
 	this -> curNum = 0;
 	this -> current = start;
 }
