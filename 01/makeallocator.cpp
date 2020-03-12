@@ -4,6 +4,10 @@
 
 void Allocator::makeAllocator(size_t maxSize)
 {
+	if(maxSize < 0)
+	{
+		return;
+	}
 	this -> start = (char*)malloc(maxSize);
 	if(this -> start != nullptr)
 	{

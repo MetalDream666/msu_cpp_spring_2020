@@ -5,7 +5,7 @@
 
 int main()
 {
-	const int ALLSIZE = 100;
+	const int ALLSIZE = 1000000000000;
 	
 	Allocator all;
 	
