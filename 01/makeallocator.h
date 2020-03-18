@@ -5,13 +5,13 @@
 
 typedef class Allocator
 {
-	private:
+private:
 	char* start = nullptr;
 	char* current = nullptr;
 	size_t max;
 	size_t curNum;
 	
-	public:
+public:
 	void makeAllocator(size_t maxSize);
 	char* alloc(size_t size);
 	void reset();
