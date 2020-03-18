@@ -7,11 +7,9 @@
 #include <functional>
 #include <vector>
 
-using namespace std;
-
-typedef function<void ()> fStartEndType;
-typedef function<void (const string&)> fStringType;
-typedef function<void (int)> fNumberType;
+typedef std::function<void ()> fStartEndType;
+typedef std::function<void (const std::string&)> fStringType;
+typedef std::function<void (int)> fNumberType;
 
 class Parser
 {
@@ -19,7 +17,8 @@ public:
 	Parser(){};
 	~Parser(){};
 	
-	int handle(string ss);
+	
+	void parse(const std::string& ss);
 	
 	void registerCallbackFunctionOnStart(fStartEndType onStart);
 	void registerCallbackFunctionOnEnd(fStartEndType onEnd);
@@ -32,13 +31,11 @@ private:
 	fStringType fStringHandle = nullptr;
 	fNumberType fNumberHandle = nullptr;
 	
-	void parse(string ss);
 	
-	bool isNum(string s);
 	
-	vector<string> sts;
-	int vsize = 0;
-
+	bool isNum(char c);
+	
+	void handle(std::string ss);
 };
 
 #endif

@@ -1,58 +1,28 @@
 #include "parser.h"
 
-int Parser::handle(string ss)
+void Parser::handle(std::string ss)
 {
-	
-	parse(ss);
-	if(fStartParser == nullptr)
+	if(isNum(ss[0]) && (fNumberHandle != nullptr))
 	{
-		cout << "StartParser function not defined" << endl;
-		return 1;
+		fNumberHandle(stoi(ss));
 	}
-	if(fStartParser == nullptr)
+	else if (fStringHandle != nullptr)
 	{
-		cout << "EndParser function not defined" << endl;
-		return 2;
+		fStringHandle(ss);
 	}
-	if(fStartParser == nullptr)
-	{
-		cout << "StringHandle function not defined" << endl;
-		return 3;
-	}
-	if(fStartParser == nullptr)
-	{
-		cout << "NumberHandle function not defined" << endl;
-		return 4;
-	}
-	
-	fStartParser();
-	
-	for(int i = 0; i < vsize; i++)
-	{
-		if(isNum(sts[i]))
-		{
-			fNumberHandle(stoi(sts[i]));
-		}
-		else
-		{
-			fStringHandle(sts[i]);
-		}
-	}
-	fEndParser();
-	return 0;
 }
 
-void Parser::parse(string ss)
+void Parser::parse(const std::string& ss)
 {
-	int is = 0;
-	for(int i = 0; i < (int)ss.length(); i++)
+	if(fStartParser != nullptr)
 	{
-		if((isspace(ss[i])) || (i == (int)ss.length()-1))
+		fStartParser();
+	}
+	int is = 0;
+	for(size_t i = 0; i < ss.length(); i++)
+	{
+		if((isspace(ss[i])) || (i == ss.length()-1))
 		{
-			if((int)sts.size() <= vsize)
-			{
-				sts.resize((vsize+1)*2);
-			}	
 			if((i == 0) || isspace(ss[i-1]))
 			{
 				is++;
@@ -60,23 +30,27 @@ void Parser::parse(string ss)
 			}
 			else
 			{
-				if((i == (int)ss.length()-1) && !(isspace(ss[i])))
+				if((i == ss.length()-1) && !(isspace(ss[i])))
 				{
-					sts[vsize++] = ss.substr(is);
+					handle(ss.substr(is));
 				}
 				else
 				{
-					sts[vsize++] = ss.substr(is, i-is);
+					handle(ss.substr(is, i-is));
 					is = i+1;
 				}
 			}
 		}
 	}
+	if(fEndParser != nullptr)
+	{
+		fEndParser();
+	}
 }
 
-bool Parser::isNum(string s)
+bool Parser::isNum(char c)
 {
-	return (isdigit(s[0]));
+	return (isdigit(c));
 }
 
 void Parser::registerCallbackFunctionOnStart(fStartEndType onStart)

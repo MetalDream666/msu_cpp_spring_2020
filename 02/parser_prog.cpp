@@ -1,5 +1,7 @@
 #include "parser.h"
 
+using namespace std;
+
 void fStart()
 {
 	cout << "Start parsing" << endl;
@@ -38,6 +40,6 @@ int main()
 		s += a;
 	}
 	
-	int err = p.handle(s);
-	return err;
+	p.parse(s);
+	return 0;
 }
