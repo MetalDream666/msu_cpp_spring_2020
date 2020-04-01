@@ -18,9 +18,6 @@ class Serializer
     
 public:
     explicit Serializer(std::ostream& out);
-
-   /* template <class T> Error save(T& object);
-    template <class... ArgsT> Error operator()(ArgsT&&... args);*/
     
     template <class T> Error save(T& object)
 	{
@@ -31,12 +28,31 @@ public:
 	{
 		return process(args...);
 	}
+	
+	
     
 private:
-	template <class T> Error process(T&& val);
-	template <class T, class... Args> Error process(T&& val, Args&&... args);
+	template <class T> Error process(T&& val)
+	{
+		return toStream(val);
+	}
 
-    template <class T> Error toStream(T val);
+	template <class T, class... Args> Error process(T&& val, Args&&... args)
+	{
+		Error err = toStream(val);
+		if(err != Error::NoError)
+		{
+			return err;
+		}
+		out_ << Separator;
+		return process(std::forward<Args>(args)...);
+	}
+		  
+	template <class T> Error toStream(T val)
+	{
+		return Error::CorruptedArchive;
+	}
+	
     Error toStream(uint64_t a);
 	Error toStream(bool t);
 
@@ -48,9 +64,6 @@ class Deserializer
 	
 public:
 	explicit Deserializer(std::istream& in);
-	
-	/*template <class T> Error load(T& object);
-    template <class... ArgsT> Error operator()(ArgsT&&... args);*/
     
     template <class T> Error load(T& object)
 	{
@@ -65,10 +78,26 @@ public:
 	
 private:
 	
-	template <class T> Error process(T&& val);
-	template <class T, class... Args> Error process(T&& val, Args&&... args);
+	template <class T> Error process(T&& val)
+	{
+		return fromStream(val);
+	}
 
-	template <class T> Error fromStream(T val);
+	template <class T, class... Args> Error process(T&& val, Args&&... args)
+	{
+		Error err = fromStream(val);
+		if(err != Error::NoError)
+		{
+			return err;
+		}
+		return process(std::forward<Args>(args)...);
+	}
+		
+	template <class T> Error fromStream(T val)
+	{
+		return Error::CorruptedArchive;
+	}
+
     Error fromStream(uint64_t& a);
 	Error fromStream(bool& t);
 
