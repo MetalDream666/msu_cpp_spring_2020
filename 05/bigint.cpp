@@ -302,7 +302,9 @@ Bigint Bigint::operator+(const Bigint& n) const
 
 Bigint Bigint::operator-() const
 {
-	Bigint new_n = Bigint(num, !(sign), len);
+	uint8_t* new_num = new uint8_t[len];
+	std::memcpy(new_num, num, len);
+	Bigint new_n = Bigint(new_num, !(sign), len);
 	return new_n;
 }
 
