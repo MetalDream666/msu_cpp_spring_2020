@@ -3,9 +3,9 @@
 
 #include "format.h"
 
-void process(std::stringstream& str, int counter)
+void get_string_args(std::vector<std::string>& words)
 {
-	throw std::runtime_error("not enougth arguments");
+	return;
 }
 
 

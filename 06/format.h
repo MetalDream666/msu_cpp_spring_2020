@@ -4,26 +4,29 @@
 #include <string>
 #include <sstream>
 #include <stdexcept>
+#include <vector>
+#include <iostream>
 
 
-void process(std::stringstream& str, int counter);
+void get_string_args(std::vector<std::string>& words);
 
-template <class T, class... Args> void process(std::stringstream& str, int counter, T&& val, Args&&... args)
+template <class T, class... ArgsT> void get_string_args(std::vector<std::string>& words, T&& val, ArgsT&&... args)
 {
-	if(counter == 0)
-	{
-		str << val;
-	}
-	else 
-		process(str, counter - 1, std::forward<Args>(args)...);
+	std::stringstream s;
+	s << val;
+	words.push_back(s.str());
+	
+	get_string_args(words, std::forward<ArgsT>(args)...);
 }
-
 
 template <class... ArgsT> std::string format(std::string s, ArgsT&&... args)
 {
 	std::stringstream str;
 	bool opened = false;
 	std::string num;
+	
+	std::vector<std::string> words;
+	get_string_args(words, std::forward<ArgsT>(args)...);
 	
 	for(auto i: s)
 	{
@@ -35,7 +38,11 @@ template <class... ArgsT> std::string format(std::string s, ArgsT&&... args)
 			}
 			if(i == '}')
 			{
-				process(str, stoi(num), std::forward<ArgsT>(args)...);
+				if(words.size() < (size_t)stoi(num))
+				{
+					throw std::runtime_error("not enougth arguments");
+				}
+				str << words[stoi(num)];
 				opened = false;
 				num = "";
 				continue;

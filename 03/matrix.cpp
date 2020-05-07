@@ -92,5 +92,5 @@ const Matrix::Mproxy Matrix::operator[](size_t n) const
 Matrix::Mproxy Matrix::operator[](size_t n)
 {
 	return Mproxy(matr + cols*n, cols);
-}0
+}
 
