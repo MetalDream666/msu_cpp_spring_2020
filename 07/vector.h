@@ -3,6 +3,9 @@
 #include <stdexcept>
 #include <cstring>
 
+#ifndef VECTOR_H
+#define VECTOR_H
+
 template <class T>
 struct MyAllocator
 {
@@ -196,4 +199,6 @@ public:
 		allocator.deallocate(memory, memsize);
 	}
 };
+
+#endif
 
