@@ -53,5 +53,20 @@ int main()
 	vec[1] = 3;
 	std::cout << vec[1] << std::endl;
 	
+	int i = 1;
+	for(auto it = vec.rbegin(); it!= vec.rend(); ++it)
+	{
+		(*it) = i;
+		i++;
+	}
+		
+	for(auto it: vec)
+	{
+		std::cout << it;
+	}
+	
+	std::cout << std::endl;
+
+	
 	return 0;
 }

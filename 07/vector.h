@@ -47,10 +47,10 @@ class OddIterator: public std::iterator<std::random_access_iterator_tag, Iter>
 {
 private:
 	Iter* current_;
-	Iter* end_;
 
 public:
-	OddIterator(Iter* begin, Iter* end): current_(std::move(begin)), end_(std::move(end)) {}
+	OddIterator(){}
+	OddIterator(Iter* begin): current_(begin){}
 
 	bool operator==(const OddIterator& other) const
 	{
@@ -64,11 +64,98 @@ public:
 
 	OddIterator<Iter>& operator++()
 	{
-		if (current_ != end_)
-		{
-			current_++;
-		}
+		current_++;
 		return *this;
+	}
+	
+	OddIterator<Iter>& operator--()
+	{
+		current_--;
+		return *this;
+	}
+	
+	OddIterator<Iter>& operator+=(size_t n)
+	{
+		current_ += n;
+		return *this;
+	}
+	
+	OddIterator<Iter>& operator-=(size_t n)
+	{
+		current_ -= n;
+		return *this;
+	}
+	
+	OddIterator<Iter>& operator=(OddIterator<Iter> it)
+	{
+		current_ = it.current_;
+		return *this;
+	}
+
+	Iter& operator[](size_t n)
+	{
+		return *(current_ + n);
+	}
+
+	Iter& operator*() const
+	{
+		return *current_;
+	}
+};
+
+
+template <class Iter>
+class ReversedOddIterator: public std::reverse_iterator<OddIterator<Iter>>
+{
+private:
+	Iter* current_;
+
+public:
+	ReversedOddIterator(Iter* end): current_(end){}
+
+	bool operator==(const ReversedOddIterator& other) const
+	{
+		return current_ == other.current_;
+	}
+
+	bool operator!=(const ReversedOddIterator& other) const
+	{
+		return !(*this == other);
+	}
+
+	ReversedOddIterator<Iter>& operator++()
+	{
+		current_--;
+		return *this;
+	}
+	
+	ReversedOddIterator<Iter>& operator--()
+	{
+		current_++;
+		return *this;
+	}
+	
+	ReversedOddIterator<Iter>& operator+=(size_t n)
+	{
+		current_ -= n;
+		return *this;
+	}
+	
+	ReversedOddIterator<Iter>& operator-=(size_t n)
+	{
+		current_ += n;
+		return *this;
+	}
+	
+	ReversedOddIterator<Iter>& operator=(ReversedOddIterator<Iter> it)
+	{
+		current_ = it.current_;
+		return *this;
+	}
+
+	Iter& operator[](size_t n)
+	{
+		return *(current_ + n);
 	}
 
 	Iter& operator*() const
@@ -101,7 +188,7 @@ public:
 		{
 			throw std::out_of_range("OUT OF RANGE");
 		}
-		return memory[n];
+		return (*memory + n);
 	}
 	
 	T& operator[](size_t n)
@@ -120,22 +207,22 @@ public:
 	
 	OddIterator<T> begin()
 	{
-		return OddIterator<T>(memory, memory + vsize);
+		return OddIterator<T>(memory);
 	}
 	
 	OddIterator<T> end()
 	{
-		return OddIterator<T>(memory + vsize, memory + vsize);
+		return OddIterator<T>(memory + vsize);
 	}
 	
-	OddIterator<T> rbegin()
+	ReversedOddIterator<T> rbegin()
 	{
-		return OddIterator<T>(memory + vsize, memory);
+		return ReversedOddIterator<T>(memory + vsize - 1);
 	}
 	
-	OddIterator<T> rend()
+	ReversedOddIterator<T> rend()
 	{
-		return OddIterator<T>(memory - 1, memory - 1);
+		return ReversedOddIterator<T>(memory - 1);
 	}
 	
 	void reserve(size_t new_mem_size)
@@ -150,14 +237,24 @@ public:
 		memsize = new_mem_size;
 	}
 	
-	void resize(size_t new_size, T value = T())
+	void resize(size_t new_size)
 	{
 		if(new_size > vsize)
 		{
 			(*this).reserve(new_size);
-			OddIterator<T> it = OddIterator<T>(memory + vsize, memory + new_size); 
 			vsize = new_size;
-			for(;it != (*this).end(); ++it)
+		}
+		vsize = new_size;
+	}
+	
+	void resize(size_t new_size, T value)
+	{
+		if(new_size > vsize)
+		{
+			(*this).reserve(new_size);
+			OddIterator<T> it = OddIterator<T>(memory + vsize); 
+			vsize = new_size;
+			for(;it != end(); ++it)
 			{
 				(*it) = value;
 			}
@@ -169,7 +266,7 @@ public:
 	{
 		if(vsize >= memsize)
 		{
-			(*this).reserve(vsize*2);			
+			reserve(vsize*2);			
 		}
 		memory[vsize] = a;
 		vsize++;
