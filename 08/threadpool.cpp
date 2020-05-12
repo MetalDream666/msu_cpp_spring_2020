@@ -6,11 +6,9 @@
 
 ThreadPool::ThreadPool(size_t poolSize) : poolSize(poolSize)
 {
-	notified_available = false;
 	tasks_available = false;
 	stop = false;
 	available_workers = poolSize;
-	
 	for (size_t s = 0; s < poolSize; s++)
 	{
 		workers.emplace_back(std::thread(&ThreadPool::worker_function, this));
@@ -29,8 +27,10 @@ ThreadPool::~ThreadPool()
 
 void ThreadPool::worker_function()
 {
+	bool already_finished(false);
 	while (true)
 	{
+		if (!already_finished)
 		{
 			std::unique_lock<std::mutex> lock(tasks_mutex);
 			while (!tasks_available)
@@ -39,7 +39,6 @@ void ThreadPool::worker_function()
 			}
 			if (stop)
 				break;
-				
 			tasks_available = false;
 		}
 
@@ -55,16 +54,15 @@ void ThreadPool::worker_function()
 			}
 		}
 		if (!isTask)
+		{
+			already_finished = false;
 			continue;
+		}
 		else
 		{
 			task();
-			{
-				std::unique_lock<std::mutex> lock(available_mutex);
-				available_workers += 1;
-				notified_available = true;
-				available_cv.notify_one();
-			}
+			already_finished = true;
+			available_workers += 1;
 		}
 	}
 }
