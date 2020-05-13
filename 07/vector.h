@@ -2,6 +2,7 @@
 #include <limits>
 #include <stdexcept>
 #include <cstring>
+#include <type_traits>
 
 #ifndef VECTOR_H
 #define VECTOR_H
@@ -231,7 +232,17 @@ public:
 			return;
 			
 		T* new_memory = allocator.allocate(new_mem_size);
-		std::memcpy(new_memory, memory, vsize*sizeof(T));
+		if(std::is_pod<T>::value)
+		{
+			std::memcpy(new_memory, memory, vsize*sizeof(T));
+		}
+		else
+		{
+			for(size_t i = 0; i < vsize; i++)
+			{
+				new_memory[i] = memory[i];
+			}
+		}
 		allocator.deallocate(memory, memsize);
 		memory = new_memory;
 		memsize = new_mem_size;

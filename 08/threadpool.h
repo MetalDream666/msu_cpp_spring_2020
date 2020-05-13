@@ -18,27 +18,24 @@ class ThreadPool
 	template<class Func, class... Args>
 	auto exec(Func func, Args... args) -> std::future<decltype(func(args...))>
 	{
+		auto task = std::make_shared<std::packaged_task<decltype(func(args...))()>>(std::bind(func, std::forward<Args>(args)...));
+		auto result = task->get_future();
+
 		{
-			auto task = std::make_shared<std::packaged_task<decltype(func(args...))()>>(std::bind(func,
-				std::forward<Args>(args)...));
-			auto result = task->get_future();
-
-			{
-				std::lock_guard<std::mutex> guard(queueLock);
-				taskQueue.push([task]()
-				{ (*task)(); });
-			}
-
-			if (available_workers > 0)
-			{
-				std::unique_lock<std::mutex> lock(tasks_mutex);
-				tasks_available = true;
-				available_workers -= 1;
-				tasks_cv.notify_one();
-			}
-			
-			return result;
+			std::lock_guard<std::mutex> guard(queueLock);
+			taskQueue.push([task]()
+			{ (*task)(); });
 		}
+
+		if (available_workers > 0)
+		{
+			std::unique_lock<std::mutex> lock(tasks_mutex);
+			tasks_available = true;
+			available_workers -= 1;
+			tasks_cv.notify_one();
+		}
+		
+		return result;
 	}
 
 	void worker_function();
