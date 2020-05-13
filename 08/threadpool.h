@@ -27,7 +27,6 @@ class ThreadPool
 			{ (*task)(); });
 		}
 
-		if (available_workers > 0)
 		{
 			std::unique_lock<std::mutex> lock(tasks_mutex);
 			tasks_available = true;

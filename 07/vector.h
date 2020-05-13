@@ -183,7 +183,7 @@ public:
 		vsize = 0;
 	}
 	
-	const T operator[](size_t n) const
+	const T& operator[](size_t n) const
 	{
 		if(n >= vsize)
 		{
@@ -258,7 +258,7 @@ public:
 		vsize = new_size;
 	}
 	
-	void resize(size_t new_size, T value)
+	void resize(size_t new_size, T&& value)
 	{
 		if(new_size > vsize)
 		{
@@ -267,7 +267,7 @@ public:
 			vsize = new_size;
 			for(;it != end(); ++it)
 			{
-				(*it) = value;
+				(*it) = T(value);
 			}
 		}
 		vsize = new_size;
