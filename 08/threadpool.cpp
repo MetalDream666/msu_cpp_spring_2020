@@ -8,7 +8,6 @@ ThreadPool::ThreadPool(size_t poolSize) : poolSize(poolSize)
 {
 	tasks_available = false;
 	stop = false;
-	available_workers = poolSize;
 	for (size_t s = 0; s < poolSize; s++)
 	{
 		workers.emplace_back(std::thread(&ThreadPool::worker_function, this));
@@ -62,7 +61,6 @@ void ThreadPool::worker_function()
 		{
 			task();
 			already_finished = true;
-			available_workers += 1;
 		}
 	}
 }

@@ -16,7 +16,7 @@ class ThreadPool
 
 	// pass arguments by value
 	template<class Func, class... Args>
-	auto exec(Func func, Args... args) -> std::future<decltype(func(args...))>
+	auto exec(Func func, Args&&... args) -> std::future<decltype(func(args...))>
 	{
 		auto task = std::make_shared<std::packaged_task<decltype(func(args...))()>>(std::bind(func, std::forward<Args>(args)...));
 		auto result = task->get_future();
@@ -30,7 +30,6 @@ class ThreadPool
 		{
 			std::unique_lock<std::mutex> lock(tasks_mutex);
 			tasks_available = true;
-			available_workers -= 1;
 			tasks_cv.notify_one();
 		}
 		
@@ -41,7 +40,6 @@ class ThreadPool
 
  private:
 	size_t poolSize;
-	size_t available_workers;
 	std::queue<std::function<void(void)>> taskQueue;
 	std::vector<std::thread> workers;
 	std::mutex queueLock;
