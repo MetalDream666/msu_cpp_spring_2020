@@ -11,16 +11,32 @@
 #include <limits>
 #include <string>
 
-enum Status 
-{
-	OK,
-	WRITE_AND_STOP,
-	JUST_DIE,
+class Sorter{
+public: 
+	Sorter() {}
+	
+	void sort(const std::string& infile_name, const std::string& outfile_name);
+	
+	~Sorter() {}
+
+private:
+	
+	const std::string right_filename = "/tmp/right.txt";
+	const std::string left_filename = "/tmp/left.txt";
+	
+	uint64_t written;
+	bool written_initialized;
+	bool written_max;
+	bool stop = false;
+	std::mutex written_lock;
+	
+	void right(const std::string& infile_name = "file.txt");
+	void left(const std::string& infile_name = "file.txt");
 };
 
 
-void right(uint64_t& written, bool& written_initialized, bool& written_max, bool& stop, std::mutex& written_lock, const std::string& infile_name, const std::string& left_filename);
-void left(uint64_t& written, bool& written_initialized, bool& written_max, bool& stop, std::mutex& written_lock, const std::string& infile_name, const std::string& left_filename);
+// void right(uint64_t& written, bool& written_initialized, bool& written_max, bool& stop, std::mutex& written_lock, const std::string& infile_name, const std::string& right_filename);
+// void left(uint64_t& written, bool& written_initialized, bool& written_max, bool& stop, std::mutex& written_lock, const std::string& infile_name, const std::string& left_filename);
 
 
 #endif

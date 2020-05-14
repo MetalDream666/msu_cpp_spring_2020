@@ -1,6 +1,63 @@
 #include "sort_threads.h"
 
-void right(uint64_t& written, bool& written_initialized, bool& written_max, bool& stop, std::mutex& written_lock, const std::string& infile_name, const std::string& right_filename)
+void Sorter::sort(const std::string& infile_name, const std::string& outfile_name)
+{	
+	auto right_thread = std::thread(&Sorter::right, this, std::ref(infile_name));
+	auto left_thread = std::thread(&Sorter::left, this, std::ref(infile_name));
+	
+	right_thread.join();
+	left_thread.join();
+	
+		int num;
+	std::ofstream outfile(outfile_name);
+	std::ifstream left_file(left_filename);
+	std::ifstream right_file(right_filename);
+	
+	while(left_file >> num)
+	{
+		outfile << num << std::endl;
+	}
+		
+	char ch;
+	size_t pos;
+	if (!(right_file.peek() == std::ifstream::traits_type::eof()))
+	{
+		right_file.seekg(-1, std::ios::end);
+		pos = right_file.tellg();
+		
+		std::string line;
+		for(size_t i = 0; i <= pos; i++)
+		{
+			ch = right_file.get();
+			if(ch != '\n')
+			{
+				line.insert(line.begin(), ch);
+			}
+			else
+			{
+				if (line == "")
+				{
+					right_file.seekg(-2, std::ios::cur);
+					continue;
+				}
+				outfile << line << std::endl;
+				line.clear();
+			}
+			right_file.seekg(-2, std::ios::cur);
+		}
+		outfile << line << std::endl;
+	}
+	
+	right_file.close();
+	outfile.close();
+	
+	std::remove(left_filename.c_str());
+	std::remove(right_filename.c_str());
+		
+	return;
+}
+
+void Sorter::right(const std::string& infile_name)
 {
 	uint64_t pred_max;
 	uint64_t max;
@@ -91,7 +148,7 @@ void right(uint64_t& written, bool& written_initialized, bool& written_max, bool
 	outfile.close();
 }
 
-void left(uint64_t& written, bool& written_initialized, bool& written_max, bool& stop, std::mutex& written_lock, const std::string& infile_name, const std::string& left_filename)
+void Sorter::left(const std::string& infile_name)
 {
 	uint64_t pred_min;
 	uint64_t min;

@@ -12,6 +12,12 @@
 
 int main()
 {
+	
+	Sorter sorter;
+	
+	sorter.sort("file.txt", "answer.txt");
+	
+	/*
 	uint64_t written;
 	bool written_initialized;
 	bool written_max;
@@ -75,7 +81,7 @@ int main()
 	
 	std::remove(left_filename.c_str());
 	std::remove(right_filename.c_str());
-	
+	*/
 	std::cout << "The sorted numbers are in answer.txt" << std::endl;	
 	
 	return 0;
