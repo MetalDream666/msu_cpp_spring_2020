@@ -8,7 +8,7 @@ void Sorter::sort(const std::string& infile_name, const std::string& outfile_nam
 	right_thread.join();
 	left_thread.join();
 	
-		int num;
+	int num;
 	std::ofstream outfile(outfile_name);
 	std::ifstream left_file(left_filename);
 	std::ifstream right_file(right_filename);
