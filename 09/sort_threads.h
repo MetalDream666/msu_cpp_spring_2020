@@ -30,8 +30,8 @@ private:
 	bool stop = false;
 	std::mutex written_lock;
 	
-	void right(const std::string& infile_name = "file.txt");
-	void left(const std::string& infile_name = "file.txt");
+	void right(const std::string& infile_name = "file.bin");
+	void left(const std::string& infile_name = "file.bin");
 };
 
 #endif

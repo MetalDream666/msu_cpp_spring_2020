@@ -63,7 +63,7 @@ void Sorter::right(const std::string& infile_name)
 	uint64_t max;
 	int count_max;
 	uint64_t num;
-	std::ifstream infile(infile_name);
+	std::ifstream infile(infile_name, std::ios::binary);
 	std::ofstream outfile(right_filename);
 	bool first_turn(true);
 	count_max = 0;
@@ -76,8 +76,10 @@ void Sorter::right(const std::string& infile_name)
 
 		if(first_turn)
 		{
-			while(infile >> num)
+			while(!infile.eof())
 			{
+				infile.read(reinterpret_cast<char *>(&num), sizeof(num));
+	//			std::cout << "right " << num << std::endl;
 				if(num > max)
 				{
 					max = num;
@@ -95,8 +97,10 @@ void Sorter::right(const std::string& infile_name)
 			count_max = 0;
 			pred_max = max;
 			max = 0;
-			while(infile >> num)
+			while(!infile.eof())
 			{
+				infile.read(reinterpret_cast<char *>(&num), sizeof(num));
+	//			std::cout << "right " << num << std::endl;
 				if((num > max) && (num < pred_max))
 				{
 					max = num;
@@ -125,8 +129,6 @@ void Sorter::right(const std::string& infile_name)
 			{
 				if ((written >= max) && (!written_max))
 				{
-				//	std::cout << "max:" << max << " written:" << written << " written_max:" << written_max << std::endl;
-				//	std::cout << "(written >= max) && (!written_max)" << std::endl;
 					stop = true;
 					break;
 				}
@@ -154,12 +156,13 @@ void Sorter::left(const std::string& infile_name)
 	uint64_t min;
 	uint64_t num;
 	int count_min;
-	std::ifstream infile(infile_name);
+	std::ifstream infile(infile_name, std::ios::binary);
 	std::ofstream outfile(left_filename);
 	bool first_turn(true);
 	
 	count_min = 0;
 	min = std::numeric_limits<uint64_t>::max();
+//	char buf[8];
 	
 	while(true)
 	{
@@ -167,8 +170,10 @@ void Sorter::left(const std::string& infile_name)
 		infile.seekg(0, std::ios::beg);
 		if(first_turn)
 		{
-			while(infile >> num)
+			while(!infile.eof())
 			{
+				infile.read(reinterpret_cast<char *>(&num), sizeof(num));
+	//			std::cout << "left " << num << std::endl;
 				if(num < min)
 				{
 					min = num;
@@ -186,8 +191,10 @@ void Sorter::left(const std::string& infile_name)
 			pred_min = min;
 			count_min = 0;
 			min = std::numeric_limits<uint64_t>::max();
-			while(infile >> num)
+			while(!infile.eof())
 			{
+				infile.read(reinterpret_cast<char *>(&num), sizeof(num));
+	//			std::cout << "left " << num << std::endl;
 				if((num < min) && (num > pred_min))
 				{
 					min = num;
@@ -216,8 +223,6 @@ void Sorter::left(const std::string& infile_name)
 			{
 				if ((written <= min) && written_max)
 				{
-				//	std::cout << "min:" << min << " written:" << written << " written_max:" << written_max << std::endl;
-				//	std::cout << "(written <= min) && written_max" << std::endl;
 					stop = true;
 					break;
 				}

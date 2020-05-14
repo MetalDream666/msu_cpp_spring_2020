@@ -23,4 +23,4 @@ generator.o: generator.cpp
 	$(CPP) -c -Wall generator.cpp
 
 clean:
-	rm -rf *.o test generator *.txt
+	rm -rf *.o test generator *.txt *.bin

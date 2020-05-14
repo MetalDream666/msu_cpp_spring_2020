@@ -14,7 +14,7 @@ int main()
 {
 	Sorter sorter;
 	
-	sorter.sort("file.txt", "answer.txt");
+	sorter.sort("file.bin", "answer.txt");
 	
 	std::cout << "The sorted numbers are in answer.txt" << std::endl;	
 	
