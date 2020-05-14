@@ -34,9 +34,4 @@ private:
 	void left(const std::string& infile_name = "file.txt");
 };
 
-
-// void right(uint64_t& written, bool& written_initialized, bool& written_max, bool& stop, std::mutex& written_lock, const std::string& infile_name, const std::string& right_filename);
-// void left(uint64_t& written, bool& written_initialized, bool& written_max, bool& stop, std::mutex& written_lock, const std::string& infile_name, const std::string& left_filename);
-
-
 #endif
